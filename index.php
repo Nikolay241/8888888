@@ -1,0 +1,1550 @@
+<?php
+$api = [
+    'key' => '12950',
+    'secret' => 'IauvB5nZzoYkcg7yzzcQFQMDsgn9NhUx',
+    'flow_url' => 'https://leadrock.com/URL-UJ4XL-SJQ0J'
+];
+
+function send_the_order($post, $api)
+{
+    $params = [
+        'flow_url' => $api['flow_url'],
+        'user_phone' => $post['phone'],
+        'user_name' => $post['name'],
+        'other' => $post['other'],
+        'ip' => $_SERVER['REMOTE_ADDR'],
+        'ua' => $_SERVER['HTTP_USER_AGENT'],
+        'api_key' => $api['key'],
+        'sub1' => $post['sub1'],
+        'sub2' => $post['sub2'],
+        'sub3' => $post['sub3'],
+        'sub4' => $post['sub4'],
+        'sub5' => $post['sub5'],
+        'ajax' => 1,
+    ];
+    $url = 'https://leadrock.com/api/v2/lead/save';
+
+    $trackUrl = $params['flow_url'] . (strpos($params['flow_url'], '?') === false ? '?' : '&') . http_build_query($params);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $trackUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+    $params['track_id'] = curl_exec($ch);
+
+    $params['sign'] = sha1(http_build_query($params) . $api['secret']);
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+    curl_exec($ch);
+    curl_close($ch);
+
+    $endpointName = file_exists('./confirm.php') ? 'confirm.php' : 'confirm.html';
+    header('Location: ' . (empty($post['success_page']) ? $endpointName . '?track_id='.$params['track_id'] : $post['success_page']));
+}
+
+if (!empty($_POST['phone'])) {
+    send_the_order($_REQUEST, $api);
+}
+
+if (!empty($_GET)) {
+?>
+    <script type="text/javascript">
+        window.onload = function() {
+            let forms = document.getElementsByTagName("form");
+            for(let i=0; i < forms.length; i++) {
+                let form = forms[i];
+                form.setAttribute('action', form.getAttribute('action') + "?<?php echo http_build_query($_GET)?>");
+                form.setAttribute('method', 'post');
+            }
+        };
+    </script>
+<?php
+}
+
+?>
+<!DOCTYPE html>
+<html lang="hu" dir="ltr" class="  webp webp-alpha webp-animation webp-lossless">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+      Guavital vásárlása olcsón. Árak, vélemények. Guavital megrendelése most!
+    </title>
+    <link rel="stylesheet" href="css/style.min.css" />
+    <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon" />
+  </head>
+
+  <body
+    class="timer-different ev-date"
+    data-invalid-name-text="Helyesen adja meg a pontos nevét!"
+    data-invalid-phone-text="Adja meg a pontos telefonszámát különben nem tudjuk elérni!"
+  >
+    <header class="header block">
+      <div class="container">
+        <div class="header__wrapper">
+          <picture>
+            <source
+              media="(min-width: 1024px)"
+              srcset="header_woman_desk.webp"
+              type="image/webp"
+            />
+            <source
+              media="(min-width: 1024px)"
+              srcset="img/header_woman_desk.png"
+            />
+            <source
+              srcset="data:image/png;base64, PchI7wAAAABJRU5ErkJggg%3D%3D.html"
+            />
+            <img
+              class="header__image header__image--desk"
+              src="img/header_woman_desk.png"
+              alt="img"
+            />
+          </picture>
+
+          <div class="header__content content">
+            <div class="content__inner">
+              <a class="content__link" href="#components">Összetétel</a>
+              <a class="content__link" href="#result">Vélemények</a>
+              <div class="content__timer">
+                <div class="timer">
+                  <span class="timer__text">Akció <br />hátralévő ideje:</span>
+                  <span class="timer__item hours"></span>
+                  <span class="timer__item hours"></span>:
+                  <span class="timer__item minutes"></span>
+                  <span class="timer__item minutes"></span>:
+                  <span class="timer__item seconds"> </span>
+                  <span class="timer__item seconds"></span>
+                </div>
+              </div>
+            </div>
+            <div class="content__main">
+              <div class="content__info">
+                <div class="content__logo">
+                  <svg
+                    class="content__logo-img"
+                    width="472"
+                    height="123"
+                    viewbox="0 0 472 123"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M33.2761 62.472C33.2761 58.8741 33.9286 55.6033 35.2335 52.3325C36.5385 49.0618 38.4959 46.4451 40.7795 44.1556C43.0632 41.8661 45.9993 39.9036 49.2617 38.5953C52.524 37.287 56.1126 36.6328 60.0275 36.6328C64.2685 36.6328 67.8571 37.287 71.1195 38.5953C74.3818 39.9036 77.318 41.539 80.2541 44.1556L72.0982 53.9679C70.1408 52.3325 68.5096 51.3513 66.5522 50.3701C64.2685 49.3888 61.9849 49.0618 59.375 49.0618C57.0913 49.0618 54.4815 50.043 52.524 51.3513C48.9354 54.295 47.3043 57.8929 47.3043 62.472C47.3043 66.3969 48.6092 69.9947 51.2191 72.6114C53.829 75.228 57.0913 76.5363 61.0062 76.5363C64.2685 76.5363 66.8784 75.8821 68.8358 74.2468V68.0323H59.0487V57.8929H81.8853V80.4612C75.6868 85.6945 68.5096 87.984 60.3537 87.984C55.1339 87.984 50.5666 87.0028 46.6518 84.7132C42.4107 82.4237 39.1484 79.48 36.8647 75.5551C34.2548 71.9572 33.2761 67.3781 33.2761 62.472Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M89.0624 65.7426V37.6139H103.091V65.4156C103.091 69.0134 103.743 71.63 105.374 73.2654C107.005 74.9008 109.289 75.882 112.225 75.882C115.161 75.882 117.445 74.9008 119.076 73.2654C120.707 71.63 121.36 69.0134 121.36 65.4156V37.2869H135.388V65.4156C135.388 69.3405 134.735 72.9383 133.757 75.882C132.778 78.8257 131.147 81.1153 129.189 83.0778C127.232 85.0402 124.622 86.3485 122.012 87.3298C119.076 88.311 115.814 88.6381 112.551 88.6381C105.374 88.6381 99.5019 86.6756 95.5871 83.0778C91.0198 79.1528 89.0624 73.2654 89.0624 65.7426Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M136.366 87.6568L157.572 37.2869H170.947L192.153 87.6568H177.472L173.557 78.4987H154.309L150.721 87.3298H136.366V87.6568ZM158.55 68.0322H169.643L164.097 53.9678L158.55 68.0322Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M182.366 37.614H197.699L208.791 69.3406L220.209 37.614H235.542L215.316 87.984H202.266L182.366 37.614Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M255.769 37.614H242.067V87.6569H255.769V37.614Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M262.294 49.7159V37.614H306.009V49.7159H291.002V87.6569H276.974V49.7159H262.294Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M300.137 87.6568L321.342 37.2869H334.718L355.923 87.6568H341.243L337.654 78.8258H318.406L314.818 87.6568H300.137ZM322.321 68.0322H333.413L327.867 53.9678L322.321 68.0322Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M360.817 87.6569V37.614H374.519V75.228H398.66V87.6569H360.817Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M424.486 55.7692V40H435.477V55.7692H450V60.1058V64.0481H435.477V81H424.486V64.0481H408V55.7692H424.486Z"
+                      fill="#E62379"
+                    />
+                  </svg>
+                </div>
+                <h2 class="content__subtitle">
+                  Segít hosszú távon megszabadulni a súlyfeleslegtől, továbbá:
+                </h2>
+                <ul class="content__list">
+                  <li class="content__list-item">
+                    Biztosítja a méregtelenítési folyamatot
+                  </li>
+                  <li class="content__list-item">Nincs kínzó éhségérzet</li>
+                  <li class="content__list-item">Javul az anyagcsere</li>
+                </ul>
+              </div>
+              <div class="header__image header__image--mob">
+                <ul class="header__list">
+                  <li class="content__list-item header__list-item">
+                    Biztosítja a méregtelenítési folyamatot
+                  </li>
+                  <li class="content__list-item header__list-item">
+                    Nincs kínzó éhségérzet
+                  </li>
+                  <li class="content__list-item header__list-item">
+                    Javul az anyagcsere
+                  </li>
+                </ul>
+
+                <picture>
+                  <source
+                    media="(min-width: 1024px)"
+                    srcset="
+                      data:image/png;base64,
+                      PchI7wAAAABJRU5ErkJggg%3D%3D.html
+                    "
+                  />
+
+                  <img src="img/prod.png" alt />
+                </picture>
+              </div>
+              <div class="content__form">
+                <form action="index.php" 
+                  class="order-form x_order_form"
+                  
+                  method="post"
+                >
+                  <div class="order-form__border">
+                    <span class="order-form__title">Figyelem!</span
+                    ><span class="order-form__text"
+                      >csak ma
+                      <span
+                        class="date-0"
+                        data-format="dd monthFull"
+                      ></span></span
+                    ><span class="order-form__price price"
+                      ><span class="price__previous"
+                        ><span class="x_price_previous">19400</span
+                        ><span class="x_currency">HUF</span></span
+                      ><span class="price__current"
+                        ><span class="x_price_current">9700</span
+                        ><span class="x_currency">HUF</span></span
+                      ></span
+                    >
+                  <label for="" style="color: #fff;">PÉLDÁUL: KÁLMÁN DÁNIEL
+                  </label>
+                    <label class="order-form__name"
+                      ><input
+                        type="text"
+                        name="name"
+                        placeholder="Az Ön neve"
+                        required
+                        autocomplete="name" /></label
+                    >
+                    <label for="" style="color: #fff;">PÉLDÁUL: +36 1111 11111
+                    </label>
+                    <label class="order-form__phone"
+                      ><input
+                        type="tel"
+                        name="phone"
+                        placeholder="Telefonszáma"
+                        required
+                        autocomplete="tel" /></label
+                    ><button class="order-form__btn" type="submit">
+                      Megrendelés</button
+                    ><span class="order-form__users"
+                      >Jelenleg <span>120</span> ember van az oldalon</span
+                    ><img
+                      class="order-form__sticker"
+                      src="img/sale_sticker.png"
+                      alt
+                    />
+                  </div>
+              
+                <input type="hidden" name="sub1" value="{subid}">
+</form>
+                <span class="order-form__pack"
+                  >Megmaradt csomagok száma
+                  <span class="lastpack">20</span></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="header__recommendation spec">
+          <div class="spec__product">
+            <picture>
+              <source media="(min-width: 1024px)" srcset="img/prod.png" />
+              <source
+                media="(min-width: 300px)"
+                srcset="
+                  data:image/png;base64,
+                  PchI7wAAAABJRU5ErkJggg%3D%3D.html
+                "
+              />
+              <img src="img/prod.png" alt />
+            </picture>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section class="attempts block">
+      <div class="container">
+        <div class="attempts__wrap">
+          <h2 class="attempts__title">Hányszor próbált már lefogyni, de:</h2>
+          <picture>
+            <source
+              media="(min-width: 1024px)"
+              srcset="data:image/png;base64, PchI7wAAAABJRU5ErkJggg%3D%3D.html"
+            />
+            <source srcset="attempts__woman_mob.webp" type="image/webp" />
+            <img
+              class="attempts__image attempts__image--mob"
+              src="img/attempts__woman_mob.png"
+              alt
+            />
+          </picture>
+          <div class="attempts__cause">
+            <ul class="attempts__list">
+              <li class="attempts__item">Kiborult</li>
+              <li class="attempts__item">Nem volt elég akaratereje</li>
+              <li class="attempts__item">A diéta után a kilók visszajöttek</li>
+              <li class="attempts__item">Nem volt elég ideje sportolni</li>
+              <li class="attempts__item">Nem volt eredmény</li>
+            </ul>
+            <ul class="attempts__list">
+              <li class="attempts__item">Kevésnek bizonyult a motiváció</li>
+              <li class="attempts__item">A mérleg nyelve nem mozdult el</li>
+              <li class="attempts__item">
+                Nem tudta leküzdeni az éhségérzetet
+              </li>
+              <li class="attempts__item">
+                Az étrend-kiegészítők mellékhatásaitól szenvedett
+              </li>
+              <li class="attempts__item">Nem kapott támogatást</li>
+            </ul>
+          </div>
+        </div>
+        <picture>
+          <source
+            media="(min-width: 1024px)"
+            srcset="attempts__woman.webp"
+            type="image/webp"
+          />
+          <source
+            media="(min-width: 1024px)"
+            srcset="img/attempts__woman.png"
+          />
+          <source
+            media="(min-width: 300px)"
+            srcset="data:image/png;base64, PchI7wAAAABJRU5ErkJggg%3D%3D.html"
+          />
+          <img
+            class="attempts__image attempts__image--desc"
+            src="img/attempts__woman.png"
+            alt
+          />
+        </picture>
+      </div>
+    </section>
+    <section class="dreams block">
+      <div class="container">
+        <h2 class="dreams__title">
+          Ezek az emberek szintén a <span>fogyásról</span> álmodtak, és
+          <span>nem sikerült</span> nekik
+        </h2>
+
+        <div class="dreams__list-wrapper">
+          <ul class="dreams__list">
+            <li class="dreams__item">
+              <div class="dreams__item-inner">
+                <div class="dreams__image">
+                  <picture>
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="dreams1.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="img/dreams1.png"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="dreams1_mob.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="img/dreams1_mob.png"
+                    />
+                    <img src="img/dreams1.png" alt />
+                  </picture>
+                  <img class="dreams__image-weight" src="img/weight1.png" alt />
+                </div>
+                <div class="dreams__info">
+                  <span class="dreams__name">Dzsesszika, 30 éves</span
+                  ><span class="dreams__weight"><b>Súly: </b>154 kg</span
+                  ><span class="dreams__problems"
+                    ><b>Problémák: </b>visszerek, ízületi gyulladás, magas
+                    vérnyomás, primer meddőség</span
+                  ><span class="dreams__civil-status"
+                    ><b>Családi állapot: </b>egyedülálló, 3 macskával él</span
+                  >
+                </div>
+              </div>
+            </li>
+            <li class="dreams__item">
+              <div class="dreams__item-inner">
+                <div class="dreams__image">
+                  <picture>
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="dreams2.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="img/dreams2.png"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="dreams2_mob.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="img/dreams2_mob.png"
+                    />
+                    <img src="img/dreams2.png" alt />
+                  </picture>
+                  <img class="dreams__image-weight" src="img/weight2.png" alt />
+                </div>
+                <div class="dreams__info">
+                  <span class="dreams__name">Júlia, 34 éves</span
+                  ><span class="dreams__weight"><b>Súly: </b>89 kg</span
+                  ><span class="dreams__problems"
+                    ><b>Problémák: </b>cukorbetegség, ízületi problémák, gyors
+                    súlygyarapodás, számos diéta ellenére</span
+                  ><span class="dreams__civil-status"
+                    ><b>Családi állapot: </b>házas, van egy fia</span
+                  >
+                </div>
+              </div>
+            </li>
+            <li class="dreams__item">
+              <div class="dreams__item-inner">
+                <div class="dreams__image">
+                  <picture>
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="dreams3.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="img/dreams3.png"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="dreams3_mob.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="img/dreams3_mob.png"
+                    />
+                    <img src="img/dreams3.png" alt />
+                  </picture>
+                  <img class="dreams__image-weight" src="img/weight3.png" alt />
+                </div>
+                <div class="dreams__info">
+                  <span class="dreams__name">Ella, 42 éves</span
+                  ><span class="dreams__weight"><b>Súly: </b>110 kg</span
+                  ><span class="dreams__problems"
+                    ><b>Problémák: </b>mozgásszervi problémái vannak, alig tudja
+                    felvenni a cipőjét, állandó légszomj, tachycardia, nem kap
+                    munkát</span
+                  ><span class="dreams__civil-status"
+                    ><b>Családi állapot: </b>elvált</span
+                  >
+                </div>
+              </div>
+            </li>
+            <li class="dreams__item">
+              <div class="dreams__item-inner">
+                <div class="dreams__image">
+                  <picture>
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="dreams4.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="img/dreams4.png"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="dreams4_mob.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="img/dreams4_mob.png"
+                    />
+                    <img src="img/dreams4.png" alt />
+                  </picture>
+                  <img class="dreams__image-weight" src="img/weight4.png" alt />
+                </div>
+                <div class="dreams__info">
+                  <span class="dreams__name">Linda, 39 éves</span
+                  ><span class="dreams__weight"><b>Súly: </b>114 kg</span
+                  ><span class="dreams__problems"
+                    ><b>Problémák: </b>járási nehézség, térd meniszkusz
+                    szakadás, lúdtalp, térd- és csípőízületi gyulladás. Két év
+                    múlva kerekesszékbe kerülhet.</span
+                  ><span class="dreams__civil-status"
+                    ><b>Családi állapot: </b>egyedülálló</span
+                  >
+                </div>
+              </div>
+            </li>
+            <li class="dreams__item">
+              <div class="dreams__item-inner">
+                <div class="dreams__image">
+                  <picture>
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="dreams5.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 1024px)"
+                      srcset="img/dreams5.png"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="dreams5_mob.webp"
+                      type="image/webp"
+                    />
+                    <source
+                      media="(min-width: 300px)"
+                      srcset="img/dreams5_mob.png"
+                    />
+                    <img src="img/dreams5.png" alt />
+                  </picture>
+                  <img class="dreams__image-weight" src="img/weight5.png" alt />
+                </div>
+                <div class="dreams__info">
+                  <span class="dreams__name">Miki, 32 éves</span
+                  ><span class="dreams__weight"><b>Súly: </b>147 kg</span
+                  ><span class="dreams__problems"
+                    ><b>Problémák: </b>Impotencia, szív- és érrendszeri
+                    betegségek, mikrosztrók, tartós fejfájás és
+                    vérnyomás-emelkedés</span
+                  ><span class="dreams__civil-status"
+                    ><b>Családi állapot: </b>egyedülálló</span
+                  >
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <h3 class="dreams__subtitle">
+          A <span>Guavital</span> célja, hogy ön valóra váltsa álmait és
+          elkerülje a veszélyes következményeket.
+        </h3>
+      </div>
+    </section>
+    <section class="positive block">
+      <div class="container">
+        <h2 class="positive__title">
+          A <span>Guavital</span> segít megszüntetni azokat az okokat, amelyek
+          gátolják a fogyást
+        </h2>
+        <h3 class="positive__subtitle">
+          Ez az átfogó fogyókúrás készítmény a következőket tartalmazza:
+        </h3>
+        <div class="positive__list">
+          <div class="positive__item card">
+            <div class="card__image">
+              <picture>
+                <source srcset="positive1.webp" type="image/webp" />
+                <img class="card__img" src="img/positive1.jpg" alt />
+              </picture>
+              <span class="card__counter"> </span>
+            </div>
+            <h3 class="card__title">Tisztítás</h3>
+            <p class="card__text">
+              Segít eltávolítani a méreganyagokat a szervezetből és megelőzni a
+              különböző betegségeket.
+            </p>
+          </div>
+          <div class="positive__item card">
+            <div class="card__image">
+              <picture>
+                <source srcset="positive2.webp" type="image/webp" />
+                <img class="card__img" src="img/positive2.jpg" alt />
+              </picture>
+              <span class="card__counter"> </span>
+            </div>
+            <h3 class="card__title">Indítás</h3>
+            <p class="card__text">
+              Elősegíti a normál bélműködést és a gyors kalóriaégetést.
+            </p>
+          </div>
+          <div class="positive__item card">
+            <div class="card__image">
+              <picture>
+                <source srcset="positive3.webp" type="image/webp" />
+                <img class="card__img" src="img/positive3.jpg" alt />
+              </picture>
+              <span class="card__counter"> </span>
+            </div>
+            <h3 class="card__title">Aktív munka</h3>
+            <p class="card__text">
+              Segít a zsírégetésben diéta vagy sport nélkül is, és hatással van
+              az éhség elnyomására.
+            </p>
+          </div>
+          <div class="positive__item card">
+            <div class="card__image">
+              <picture>
+                <source srcset="positive4.webp" type="image/webp" />
+                <img class="card__img" src="img/positive4.jpg" alt />
+              </picture>
+              <span class="card__counter"> </span>
+            </div>
+            <h3 class="card__title">Stabilizáció</h3>
+            <p class="card__text">
+              A kúra után a szervezet folytathatja azt, amit elkezdett, és
+              fenntarthatja a pozitív tendenciát.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="sale">
+      <div class="container sale__inner">
+        <div class="sale__backgorund"></div>
+        <div class="sale__img-wrapper">
+          <picture>
+            <img class="sale__img" src="img/prod.png" alt="prod" />
+          </picture>
+        </div>
+        <div class="sale__content">
+          <div class="sale__info">
+            <div class="sale__info-intro">
+              <h3 class="sale__info-header">Figyelem!</h3>
+              <p class="sale__info-text">
+                Csak ma
+                <span class="date-0" data-format="dd monthFull"
+                  >, Július 02.</span
+                ><span class="sale__info-text--display">, az ár:</span>
+              </p>
+            </div>
+            <span class="sale__info-price prices">
+              <span class="prices__old">
+                <span class="prices__old-cost x_price_previous">19400</span>
+                <span class="prices__old-currency x_currency">HUF</span></span
+              ><span class="prices__line"></span
+              ><span class="prices__new"
+                ><span class="prices__new-cost x_price_current">9700</span>
+                <span class="prices__new-currency x_currency">HUF</span>
+              </span>
+            </span>
+            <div class="sale__info-timer timer">
+              <div class="timer">
+                <span class="timer__text timer__text--sale"
+                  >Akció<br class="timer__br" />
+                  <br class="timer__br" />hátralévő ideje:</span
+                >
+                <span>
+                  <span class="timer__item hours"> </span>
+                  <span class="timer__item hours"></span>:
+                  <span class="timer__item minutes"> </span>
+                  <span class="timer__item minutes"></span>:
+                  <span class="timer__item seconds"> </span>
+                  <span class="timer__item seconds"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <form action="index.php"   method="post" class="sale__form x_order_form">
+          <div>
+            <label for="">PÉLDÁUL: KÁLMÁN DÁNIEL
+            </label>
+            <label class="sale__form-name">
+              <input
+                class="sale__form-input"
+                type="text"
+                name="name"
+                placeholder="Név"
+                required
+                autocomplete="name"
+              />
+            </label>
+          </div>
+           <div>  
+            <label for="">PÉLDÁUL: +36 1111 11111
+            </label>
+            <label class="sale__form-phone">
+              <input
+                class="sale__form-input"
+                type="tel"
+                name="phone"
+                placeholder="Telefonszám"
+                required
+                autocomplete="tel"
+              />
+            </label>
+           </div>
+            <button class="sale__form-btn" type="submit">Megrendelés</button>
+         
+          <input type="hidden" name="sub1" value="{subid}">
+</form>
+        </div>
+      </div>
+    </div>
+    <section class="result block" id="result">
+      <div class="container">
+        <h2 class="result__title">
+          Fotó a <span>Guavital</span> ELŐTT és UTÁN
+        </h2>
+
+        <div class="result__list-wrapper">
+          <ul class="result__list">
+            <li class="result__item">
+              <div class="result__content-wrapper">
+                <div class="result__inner">
+                  <div class="result__info">
+                    <h3 class="result__name">Ágnes Császár</h3>
+                    <span class="result__age">27 éves, Miskolc</span>
+                  </div>
+                  <div class="result__reviews">
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                  </div>
+                </div>
+                <div class="result__feedback feedback">
+                  <picture>
+                    <source srcset="result1.webp" type="image/webp" />
+                    <img class="result__image" src="img/result1.jpg" alt />
+                  </picture>
+                  <h3 class="feedback__title">"Nem kívánom az édességet"</h3>
+                  <p class="feedback__text">
+                    Mielőtt elkezdtem volna szedni a Guavitalt, hihetetlenül
+                    kívántam a lisztet és az édességeket. Ettem és nem tudtam
+                    leállni. Ez a termék tényleg megmentett engem. Az
+                    utasításoknak megfelelően szedtem, és a vércukorszintem
+                    normalizálódott. Most már minden desszertet visszautasítok.
+                    Egyszerűen nem kívánom. Ez egy igazi csoda számomra! És a
+                    képeim is azt mutatják, hogy nem volt hiábavaló.
+                  </p>
+                </div>
+                <div class="result__read-more"></div>
+              </div>
+            </li>
+            <li class="result__item">
+              <div class="result__content-wrapper">
+                <div class="result__inner">
+                  <div class="result__info">
+                    <h3 class="result__name">Katalin Berki</h3>
+                    <span class="result__age">32 éves, Szeged</span>
+                  </div>
+                  <div class="result__reviews">
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                  </div>
+                </div>
+                <div class="result__feedback feedback">
+                  <picture>
+                    <source srcset="result2.webp" type="image/webp" />
+                    <img class="result__image" src="img/result2.jpg" alt />
+                  </picture>
+                  <h3 class="feedback__title">"Egy hónap alatt -6 kiló"</h3>
+                  <p class="feedback__text feedback__text--160">
+                    Nagyon elégedett vagyok a Guavitallal! 6 kiló
+                    súlyfeleslegtől szabadultam meg, ami az ülőmunka miatt
+                    szaladt fel rám! Nem éreztem álmosnak magam, nem fájt a
+                    hasam, nem vettem észre semmilyen rendellenességet a
+                    szervezetemben! Már második hete szedem. Az első hét végére
+                    kezdtem el fogyni. Azt hiszem, az eredmény nagyon jó, mert
+                    korábban nehéz volt leadni még 1 kilót is.
+                  </p>
+                </div>
+                <div class="result__read-more"></div>
+              </div>
+            </li>
+            <li class="result__item">
+              <div class="result__content-wrapper">
+                <div class="result__inner">
+                  <div class="result__info">
+                    <h3 class="result__name">Krisztina Tass</h3>
+                    <span class="result__age">37 éves, Debrecen</span>
+                  </div>
+                  <div class="result__reviews">
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                  </div>
+                </div>
+                <div class="result__feedback feedback">
+                  <picture>
+                    <source srcset="result3.webp" type="image/webp" />
+                    <img class="result__image" src="img/result3.jpg" alt />
+                  </picture>
+                  <h3 class="feedback__title">"Jó segítség a fogyásban"</h3>
+                  <p class="feedback__text feedback__text--160">
+                    Akkor vettem ezt a terméket, amikor először kezdtem el járni
+                    az edzőterembe csoportos edzésre. Életem legnagyobb súlya
+                    volt rajtam, és undorítónak éreztem magam miatta. Úgy
+                    döntöttem, hogy egyszerre minden fronton harcolok a zsírral:
+                    megvettem a Guavitalt, elmentem edzeni, elkezdtem helyesen
+                    táplálkozni. Eltökélt és motivált voltam, hogy újra karcsú
+                    legyek! Hat hónap telt el. Megszabadultam a súlyfeleslegtől,
+                    a testem rugalmasabbá és ellenállóbbá vált. Természetesen a
+                    használata önmagában nem fog megszabadítani a zsírtól. De
+                    más módokkal kombinálva segít a túlsúly leküzdésében. Légy
+                    szép és egészséges!
+                  </p>
+                </div>
+                <div class="result__read-more"></div>
+              </div>
+            </li>
+            <li class="result__item">
+              <div class="result__content-wrapper">
+                <div class="result__inner">
+                  <div class="result__info">
+                    <h3 class="result__name">Adél Kovács</h3>
+                    <span class="result__age">35 éves, Kecskemét</span>
+                  </div>
+                  <div class="result__reviews">
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                  </div>
+                </div>
+                <div class="result__feedback feedback">
+                  <picture>
+                    <source srcset="result4.webp" type="image/webp" />
+                    <img class="result__image" src="img/result4.jpg" alt />
+                  </picture>
+                  <h3 class="feedback__title">
+                    "Csökkenti a súlyt és felgyorsítja az anyagcserét."
+                  </h3>
+                  <p class="feedback__text feedback__text--140">
+                    A Guavital segített nekem 14 kg-ot fogyni! Igen, és még egy
+                    fontos dolog: a kilók nem jöttek vissza. A kúra után csak
+                    tovább fogytam, a gyomrom kisebbnek éreztem, és elkezdtem
+                    kis adagokat enni mindenféle kellemetlenség nélkül. Tetszik
+                    az illata, és könnyebb bevenni, mint eredetileg gondoltam.
+                  </p>
+                </div>
+                <div class="result__read-more"></div>
+              </div>
+            </li>
+            <li class="result__item">
+              <div class="result__content-wrapper">
+                <div class="result__inner">
+                  <div class="result__info">
+                    <h3 class="result__name">Anna Orton</h3>
+                    <span class="result__age">39 éves, Budapest</span>
+                  </div>
+                  <div class="result__reviews">
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                  </div>
+                </div>
+                <div class="result__feedback feedback">
+                  <picture>
+                    <source srcset="result5.webp" type="image/webp" />
+                    <img class="result__image" src="img/result5.jpg" alt />
+                  </picture>
+                  <h3 class="feedback__title">"Megvettek az összetevők"</h3>
+                  <p class="feedback__text feedback__text--180">
+                    Engem a Guavital összetétele győzött meg, igyekszem helyesen
+                    táplálkozni, ezért először elolvasom a címkéket. Az íze is
+                    elég kellemes. Nem szenvedek éhségtől, az energiám
+                    megjelent. A zsír nem tűnik el a szemem láttára, de a
+                    puffadás eltűnt, és abbahagytam a korlátlan evést. Rendeltem
+                    még egy csomagot.
+                  </p>
+                </div>
+                <div class="result__read-more"></div>
+              </div>
+            </li>
+            <li class="result__item">
+              <div class="result__content-wrapper">
+                <div class="result__inner">
+                  <div class="result__info">
+                    <h3 class="result__name">Zsuzsa Dévay</h3>
+                    <span class="result__age">41 éves, Szolnok</span>
+                  </div>
+                  <div class="result__reviews">
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                    <img src="img/star.svg" alt />
+                  </div>
+                </div>
+                <div class="result__feedback feedback">
+                  <picture>
+                    <source srcset="result6.webp" type="image/webp" />
+                    <img class="result__image" src="img/result6.jpg" alt />
+                  </picture>
+                  <h3 class="feedback__title">"Végre megindult a fogyás"</h3>
+                  <p class="feedback__text feedback__text--80">
+                    Mielőtt elkezdtem volna szedni a Guavitalt, a súlyom nem
+                    mozdult, annak ellenére, hogy sportoltam, kevesebbet
+                    próbáltam enni és különböző készítményeket szedtem. Most már
+                    tisztán látom, hogy a hasam, az oldalam és a combom kisebb
+                    lett! Csökken a zsír! Az étvágyam már mérsékeltebb, és a
+                    gyomrom is jól működik. Nagyon örülök, hogy elkezdtem
+                    alkalmazni.
+                  </p>
+                </div>
+                <div class="result__read-more"></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="components block" id="components">
+      <div class="container">
+        <h2 class="components__title">
+          A <span>Guavital</span> komplex hatása a természetes összetevők érdeme
+        </h2>
+        <div class="components__wrapper">
+          <picture class="components__product-wrap">
+            <img class="components__product" src="img/prod.png" alt />
+          </picture>
+          <div class="components__item">
+            <picture>
+              <source srcset="components1.webp" type="image/webp" />
+              <img
+                class="components__image components__image--1"
+                src="img/components1.png"
+                alt
+              />
+            </picture>
+            <h3 class="components__subtitle">Guava kivonat</h3>
+            <p class="components__text">
+              Elősegíti a méreganyagoktól való megtisztulást, javítja a gyomor-
+              és bélműködést
+            </p>
+          </div>
+          <div class="components__item">
+            <picture>
+              <source srcset="components2.webp" type="image/webp" />
+              <img
+                class="components__image components__image--2"
+                src="img/components2.png"
+                alt
+              />
+            </picture>
+            <h3 class="components__subtitle">Keserű narancs kivonat</h3>
+            <p class="components__text">
+              Elindítja az aktív zsírégetést, növeli az energiát, megnyugtatja
+              az idegeket
+            </p>
+          </div>
+          <div class="components__item">
+            <picture>
+              <source
+                media="(min-width: 1024px)"
+                srcset="components3.webp"
+                type="image/webp"
+              />
+              <source
+                media="(min-width: 1024px)"
+                srcset="img/components3.png"
+              />
+              <source
+                media="(min-width: 300px)"
+                srcset="components3_mob.webp"
+                type="image/webp"
+              />
+              <source
+                media="(min-width: 300px)"
+                srcset="components3_mob.webp"
+              />
+              <img
+                class="components__image components__image--3"
+                src="img/components3.png"
+                alt
+              />
+            </picture>
+            <h3 class="components__subtitle">Zöld tea kivonat</h3>
+            <p class="components__text">
+              Segít lebontani a zsírlerakódásokat,
+              <br class="components__text-br" />támogatja az anyagcserét és
+              gátolja az <br class="components__text-br" />étvágyat
+            </p>
+          </div>
+        </div>
+      </div>
+      <p class="footnote">*A készítmény hatása az egyéni tényezőktől függ</p>
+    </section>
+    <section class="efficiency block">
+      <div class="container">
+        <h2 class="efficiency__title">
+          A termék hatékonyságát a vásárlók is megerősítették
+        </h2>
+        <h3 class="efficiency__subtitle">
+          A forgalmazói felmérésen összesen
+          <span>1109 ügyfél vett részt. </span>Az alábbi eredményeket tudták
+          elérni
+        </h3>
+        <div class="efficiency__wrapper">
+          <div class="efficiency__item">
+            <h3 class="efficiency__result">
+              Legalább <br class="efficiency__result-br" />5 kilót fogytak
+            </h3>
+            <span class="efficiency__percent">90%</span>
+          </div>
+          <div class="efficiency__item">
+            <h3 class="efficiency__result">
+              Megőrizték az elért eredményt a kúra után
+            </h3>
+            <span class="efficiency__percent">96%</span>
+          </div>
+          <div class="efficiency__item">
+            <h3 class="efficiency__result">
+              Csökkentették az ételadagokat, de jóllakottnak érezték magukat
+            </h3>
+            <span class="efficiency__percent">84%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="sale">
+      <div class="container sale__inner">
+        <div class="sale__backgorund"></div>
+        <div class="sale__img-wrapper">
+          <picture>
+            <img class="sale__img" src="img/prod.png" alt="prod" />
+          </picture>
+        </div>
+        <div class="sale__content">
+          <div class="sale__info">
+            <div class="sale__info-intro">
+              <h3 class="sale__info-header">Figyelem!</h3>
+              <p class="sale__info-text">
+                Csak ma <span class="date-0" data-format="dd monthFull"></span
+                ><span class="sale__info-text--display"> az ára:</span>
+              </p>
+            </div>
+            <span class="sale__info-price prices">
+              <span class="prices__old">
+                <span class="prices__old-cost x_price_previous">19400</span>
+                <span class="prices__old-currency x_currency">HUF</span></span
+              ><span class="prices__line"></span
+              ><span class="prices__new"
+                ><span class="prices__new-cost x_price_current">9700</span>
+                <span class="prices__new-currency x_currency">HUF</span>
+              </span>
+            </span>
+            <div class="sale__info-timer">
+              <div class="timer">
+                <span class="timer__text timer__text--sale"
+                  >Akció<br class="timer__br" />
+                  <br class="timer__br" />hátralévő ideje:</span
+                >
+                <span>
+                  <span class="timer__item hours"> </span>
+                  <span class="timer__item hours"></span>:
+                  <span class="timer__item minutes"> </span>
+                  <span class="timer__item minutes"></span>:
+                  <span class="timer__item seconds"> </span>
+                  <span class="timer__item seconds"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <form action="index.php"   method="post" class="sale__form x_order_form">
+         <div>
+          <label for="">PÉLDÁUL: KÁLMÁN DÁNIEL
+          </label>
+          <label class="sale__form-name"
+            ><input
+              class="sale__form-input"
+              type="text"
+              name="name"
+              placeholder="Név"
+              required
+              autocomplete="name" /></label
+          >
+         </div>
+           <div>
+            <label for="">PÉLDÁUL: +36 1111 11111
+            </label>
+            <label class="sale__form-phone"
+              ><input
+                class="sale__form-input"
+                type="tel"
+                name="phone"
+                placeholder="Telefonszám"
+                required
+                autocomplete="tel" /></label
+            >
+           </div><button class="sale__form-btn" type="submit">Megrendelés</button
+            >
+          <input type="hidden" name="sub1" value="{subid}">
+</form>
+        </div>
+      </div>
+    </div>
+    <section class="expert block">
+      <div class="container expert__inner">
+        <picture>
+          <source
+            media="(min-width: 1024px)"
+            srcset="expert.webp"
+            type="image/webp"
+          />
+          <source media="(min-width: 1024px)" srcset="img/expert.png" />
+          <source
+            srcset="data:image/png;base64, PchI7wAAAABJRU5ErkJggg%3D%3D.html"
+          />
+          <img class="expert__img" src="img/expert.png" alt="expert" />
+        </picture>
+        <div class="expert__content">
+          <h2 class="expert__header">Szakértő:</h2>
+          <h3 class="expert__subheader">
+            Van egy hibája azoknak, akik fogyni akarnak.
+          </h3>
+          <div class="expert__article">
+            <p class="expert__article-text">
+              Évről évre megkeresnek olyan emberek, akik mindent megpróbáltak,
+              de nem sikerült lefogyniuk. Néhányan közülük szigorú diétába
+              kezdenek, amit nem bírnak ki. Mások sportolnak, de nem figyelnek
+              oda a táplálkozásra. A harmadik csoport különböző készítményekkel
+              próbálkozik, és mellékhatásoktól szenved.
+            </p>
+            <p class="expert__article-text">
+              Egy közös hibájuk van — a fogyáshoz átfogó megközelítésre van
+              szükség. Ahhoz, hogy a zsírlerakódások elkezdjenek égni,
+              <b class="expert__article-text--bold"
+                >meg kell tisztítani a szervezetet, rendszerezni kell a
+                bélműködést, fel kell gyorsítani az anyagcserét, és meg kell
+                próbálni kevesebbet enni.</b
+              >
+            </p>
+            <p class="expert__article-text">
+              A Guavital a következő tulajdonságokkal rendelkezik. Segít
+              <b class="expert__article-text--bold"
+                >beindítani a szervezetet, hogy elinduljon a fogyás folyamata. </b
+              >Ebben az esetben az embernek nem kell sok erőfeszítést tennie. A
+              teltségérzet még fogyókúra esetén is azt eredményezi, hogy az
+              adagok maguktól csökkennek. Természetesen, ha a sportot is
+              hozzáadjuk, az eredmény jobb lehet. <br />Nos, a Guavital
+              túlnyomórészt növényi alapú összetétele a legjobb érv a
+              mellékhatásokkal kapcsolatban.
+            </p>
+          </div>
+          <div class="expert__author">
+            <h3 class="expert__author-name">Marie Dega,</h3>
+            <p class="expert__author-info">
+              13 éves tapasztalattal rendelkező fogyási szakértő
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="gallery block">
+      <div class="container">
+        <h2 class="gallery__header">
+          Azoknak a nőknek a fotói, akiknek segített a
+          <span class="gallery__header-color">Guavital</span>
+        </h2>
+        <div class="gallery__list-wrapper">
+          <ul class="gallery__list">
+            <li class="gallery__item">
+              <picture>
+                <source srcset="gallery-1.webp" type="image/webp" />
+                <img
+                  class="gallery__img"
+                  src="img/gallery-1.jpg"
+                  alt="before-after"
+                />
+              </picture>
+            </li>
+            <li class="gallery__item">
+              <picture>
+                <source srcset="gallery-2.webp" type="image/webp" />
+                <img
+                  class="gallery__img"
+                  src="img/gallery-2.jpg"
+                  alt="before-after"
+                />
+              </picture>
+            </li>
+            <li class="gallery__item">
+              <picture>
+                <source srcset="gallery-3.webp" type="image/webp" />
+                <img
+                  class="gallery__img"
+                  src="img/gallery-3.jpg"
+                  alt="before-after"
+                />
+              </picture>
+            </li>
+            <li class="gallery__item">
+              <picture>
+                <source srcset="gallery-4.webp" type="image/webp" />
+                <img
+                  class="gallery__img"
+                  src="img/gallery-4.jpg"
+                  alt="before-after"
+                />
+              </picture>
+            </li>
+            <li class="gallery__item">
+              <picture>
+                <source srcset="gallery-5.webp" type="image/webp" />
+                <img
+                  class="gallery__img"
+                  src="img/gallery-5.jpg"
+                  alt="before-after"
+                />
+              </picture>
+            </li>
+            <li class="gallery__item">
+              <picture>
+                <source srcset="gallery-6.webp" type="image/webp" />
+                <img
+                  class="gallery__img"
+                  src="img/gallery-6.jpg"
+                  alt="before-after"
+                />
+              </picture>
+            </li>
+            <li class="gallery__item">
+              <picture>
+                <source srcset="gallery-7.webp" type="image/webp" />
+                <img
+                  class="gallery__img"
+                  src="img/gallery-7.jpg"
+                  alt="before-after"
+                />
+              </picture>
+            </li>
+            <li class="gallery__item">
+              <picture>
+                <source srcset="gallery-8.webp" type="image/webp" />
+                <img
+                  class="gallery__img"
+                  src="img/gallery-8.jpg"
+                  alt="before-after"
+                />
+              </picture>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="how-use block">
+      <div class="container">
+        <h2 class="how-use__header">
+          Hogyan kell alkalmazni a
+          <span class="how-use__header-color">Guavitalt</span>
+        </h2>
+        <div class="how-use__prod-wrapper">
+          <picture>
+            <img class="how-use__prod-img" src="img/prod.png" alt="prod" />
+          </picture>
+        </div>
+        <ul class="how-use__list">
+          <li class="how-use__item">
+            <picture>
+              <source srcset="how-use-1.webp" type="image/webp" />
+              <img class="how-use__img" src="img/how-use-1.png" alt="how-use" />
+            </picture>
+            <p class="how-use__text">
+              Felnőtteknek 1 kapszula <br />
+              naponta kétszer.
+            </p>
+          </li>
+          <li class="how-use__item">
+            <picture>
+              <source srcset="how-use-2.webp" type="image/webp" />
+              <img class="how-use__img" src="img/how-use-2.png" alt="how-use" />
+            </picture>
+            <p class="how-use__text">30 perccel étkezés előtt</p>
+          </li>
+        </ul>
+        <p class="footnote">
+          *Használat előtt kérjük, figyelmesen olvassa el a tájékoztatót
+        </p>
+      </div>
+    </section>
+    <section class="order block">
+      <div class="container">
+        <h2 class="order__header">
+          <span class="order__header-color">Guavital</span> megrendelése
+        </h2>
+        <ul class="order__list">
+          <li class="order__item">
+            <picture>
+              <source srcset="order-1.webp" type="image/webp" />
+              <img class="order__item-img" src="img/order-1.jpg" alt />
+            </picture>
+            <h3 class="order__item-header">Töltse ki a megrendelőlapot</h3>
+            <p class="order__item-text">Adja meg a nevét és telefonszámát</p>
+          </li>
+          <li class="order__item">
+            <picture>
+              <source srcset="order-2.webp" type="image/webp" />
+              <img class="order__item-img" src="img/order-2.jpg" alt />
+            </picture>
+            <h3 class="order__item-header">Fogadja a tanácsadó hívását</h3>
+            <p class="order__item-text">
+              A szakember konzultálja és felveszi postázási adatait
+            </p>
+          </li>
+          <li class="order__item">
+            <picture>
+              <source srcset="order-3.webp" type="image/webp" />
+              <img class="order__item-img" src="img/order-3.jpg" alt />
+            </picture>
+            <h3 class="order__item-header">Fizessen, miután megkapta</h3>
+            <p class="order__item-text">Nincs szükség előre utalásra</p>
+          </li>
+          <li class="order__item">
+            <picture>
+              <source srcset="order-4.webp" type="image/webp" />
+              <img class="order__item-img" src="img/order-4.jpg" alt />
+            </picture>
+            <h3 class="order__item-header">Kezdjen el változni</h3>
+            <p class="order__item-text">
+              Tegye meg az első lépést álom alakja felé
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <header class="header block">
+      <div class="container">
+        <div class="header__wrapper">
+          <picture>
+            <source
+              media="(min-width: 1024px)"
+              srcset="header_woman_desk.webp"
+              type="image/webp"
+            />
+            <source
+              media="(min-width: 1024px)"
+              srcset="img/header_woman_desk.png"
+            />
+            <source
+              srcset="data:image/png;base64, PchI7wAAAABJRU5ErkJggg%3D%3D.html"
+            />
+            <img
+              class="header__image header__image--desk"
+              src="img/header_woman_desk.png"
+              alt="img"
+            />
+          </picture>
+
+          <div class="header__content content">
+            <div class="content__main">
+              <div class="content__info">
+                <div class="content__logo">
+                  <svg
+                    class="content__logo-img"
+                    width="429"
+                    height="122"
+                    viewbox="0 0 429 122"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M33.2761 62.472C33.2761 58.8741 33.9286 55.6033 35.2335 52.3325C36.5385 49.0618 38.4959 46.4451 40.7795 44.1556C43.0632 41.8661 45.9993 39.9036 49.2617 38.5953C52.524 37.287 56.1126 36.6328 60.0275 36.6328C64.2685 36.6328 67.8571 37.287 71.1195 38.5953C74.3818 39.9036 77.318 41.539 80.2541 44.1556L72.0982 53.9679C70.1408 52.3325 68.5096 51.3513 66.5522 50.3701C64.2685 49.3888 61.9849 49.0618 59.375 49.0618C57.0913 49.0618 54.4815 50.043 52.524 51.3513C48.9354 54.295 47.3043 57.8929 47.3043 62.472C47.3043 66.3969 48.6092 69.9947 51.2191 72.6114C53.829 75.228 57.0913 76.5363 61.0062 76.5363C64.2685 76.5363 66.8784 75.8821 68.8358 74.2468V68.0323H59.0487V57.8929H81.8853V80.4612C75.6868 85.6945 68.5096 87.984 60.3537 87.984C55.1339 87.984 50.5666 87.0028 46.6518 84.7132C42.4107 82.4237 39.1484 79.48 36.8647 75.5551C34.2548 71.9572 33.2761 67.3781 33.2761 62.472Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M89.0624 65.7426V37.6139H103.091V65.4156C103.091 69.0134 103.743 71.63 105.374 73.2654C107.005 74.9008 109.289 75.882 112.225 75.882C115.161 75.882 117.445 74.9008 119.076 73.2654C120.707 71.63 121.36 69.0134 121.36 65.4156V37.2869H135.388V65.4156C135.388 69.3405 134.735 72.9383 133.757 75.882C132.778 78.8257 131.147 81.1153 129.189 83.0778C127.232 85.0402 124.622 86.3485 122.012 87.3298C119.076 88.311 115.814 88.6381 112.551 88.6381C105.374 88.6381 99.5019 86.6756 95.5871 83.0778C91.0198 79.1528 89.0624 73.2654 89.0624 65.7426Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M136.366 87.6568L157.572 37.2869H170.947L192.153 87.6568H177.472L173.557 78.4987H154.309L150.721 87.3298H136.366V87.6568ZM158.55 68.0322H169.643L164.097 53.9678L158.55 68.0322Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M182.366 37.614H197.699L208.791 69.3406L220.209 37.614H235.542L215.316 87.984H202.266L182.366 37.614Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M255.769 37.614H242.067V87.6569H255.769V37.614Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M262.294 49.7159V37.614H306.009V49.7159H291.002V87.6569H276.974V49.7159H262.294Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M300.137 87.6568L321.342 37.2869H334.718L355.923 87.6568H341.243L337.654 78.8258H318.406L314.818 87.6568H300.137ZM322.321 68.0322H333.413L327.867 53.9678L322.321 68.0322Z"
+                      fill="#E62379"
+                    />
+                    <path
+                      d="M360.817 87.6569V37.614H374.519V75.228H398.66V87.6569H360.817Z"
+                      fill="#E62379"
+                    />
+                  </svg>
+                </div>
+                <h2 class="content__subtitle">
+                  Segít hosszú távon megszabadulni a súlyfeleslegtől, továbbá:
+                </h2>
+                <ul class="content__list">
+                  <li class="content__list-item">
+                    Biztosítja a méregtelenítési folyamatot
+                  </li>
+                  <li class="content__list-item">Nincs kínzó éhségérzet</li>
+                  <li class="content__list-item">Javul az anyagcsere</li>
+                </ul>
+              </div>
+              <div class="header__image header__image--mob">
+                <ul class="header__list">
+                  <li class="content__list-item header__list-item">
+                    Biztosítja a méregtelenítési folyamatot
+                  </li>
+                  <li class="content__list-item header__list-item">
+                    Nincs kínzó éhségérzet
+                  </li>
+                  <li class="content__list-item header__list-item">
+                    Javul az anyagcsere
+                  </li>
+                </ul>
+                <picture>
+                  <source
+                    media="(min-width: 1024px)"
+                    srcset="
+                      data:image/png;base64,
+                      PchI7wAAAABJRU5ErkJggg%3D%3D.html
+                    "
+                  />
+
+                  <img src="img/prod.png" alt />
+                </picture>
+              </div>
+              <div class="content__form">
+                <form action="index.php" 
+                  class="order-form x_order_form"
+                  
+                  method="post"
+                >
+                  <div class="order-form__border">
+                    <span class="order-form__title">Figyelem!</span
+                    ><span class="order-form__text"
+                      >csak ma
+                      <span
+                        class="date-0"
+                        data-format="dd monthFull"
+                      ></span></span
+                    ><span class="order-form__price price"
+                      ><span class="price__previous"
+                        ><span class="x_price_previous">19400</span
+                        ><span class="x_currency">HUF</span></span
+                      ><span class="price__current"
+                        ><span class="x_price_current">9700</span
+                        ><span class="x_currency">HUF</span></span
+                      ></span
+                    >
+                    <label for="" style="color: #fff;">PÉLDÁUL: KÁLMÁN DÁNIEL
+                    </label>
+                    <label class="order-form__name"
+                      ><input
+                        type="text"
+                        name="name"
+                        placeholder="Az Ön neve"
+                        required
+                        autocomplete="name" /></label
+                    >
+                    <label for="" style="color: #fff;">PÉLDÁUL: +36 1111 11111
+                    </label>
+                    <label class="order-form__phone"
+                      ><input
+                        type="tel"
+                        name="phone"
+                        placeholder="Telefonszáma"
+                        required
+                        autocomplete="tel" /></label
+                    ><button class="order-form__btn" type="submit">
+                      Megrendelés</button
+                    ><span class="order-form__users"
+                      >Jelenleg <span>120</span> ember van az oldalon</span
+                    ><img
+                      class="order-form__sticker"
+                      src="img/sale_sticker.png"
+                      alt
+                    />
+                  </div>
+             
+                <input type="hidden" name="sub1" value="{subid}">
+</form>
+                <span class="order-form__pack"
+                  >Megmaradt csomagok száma
+                  <span class="lastpack">20</span></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="header__recommendation spec">
+          <div class="spec__product">
+            <picture>
+              <source media="(min-width: 1024px)" srcset="img/prod.png" />
+              <source
+                media="(min-width: 300px)"
+                srcset="
+                  data:image/png;base64,
+                  PchI7wAAAABJRU5ErkJggg%3D%3D.html
+                "
+              />
+              <img src="img/prod.png" alt />
+            </picture>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div style="padding: 100px; color: #000;"> <center> CONSTRUCTIVE ART SUPPLIES LTD,28 Wilton Road, Bexhill On Sea, East Sussex, England, TN40 1EZ <br /> <a href="policy.html" class="policy" target="_blank" rel="noopener noreferrer" style="color: inherit;">Privacy policy</a> </center> </div>
+
+<script src="js/jquery-3.7.0.min.js"></script>
+    <script src="js/index.js"></script>
+    <style> .feedback2 { width: 75px; height: 70px; position: fixed; right: -15px; top: 15%; display: flex; align-items: center; justify-content: center; background-color: red; border-top-left-radius: 35px; border-bottom-left-radius: 35px; cursor: pointer; z-index: 1000; box-shadow: -2px 3px 11px rgb(0 0 0 / 30%); transition: all 0.5s; } .feedback2:hover { right: 0; } .feedback2 img { width: 50px; height: 50px; } .popup-window { font-family: sans-serif; font-family: inherit; display: none; width: 300px; position: fixed; right: 0; top: 15%; padding: 35px 10px; background: #fff; border-radius: 5px 0 0 5px; z-index: 2000; box-shadow: -2px 3px 11px rgb(0 0 0 / 17%); } .popup-window form { width: 100%; min-height: auto; padding: 0; background: inherit; box-shadow: none; height: auto; } .popup-window label { display: block; margin-bottom: 5px; font-size: 14px; color: #333; text-transform: uppercase; } .popup-window input { box-sizing: border-box; width: 100%; height: auto; margin-bottom: 10px; padding: 10px; border: none; font-family: inherit; font-size: 16px; margin-bottom: 15px; border: 1px solid #333; } .popup-window input::placeholder { font-size: 16px; } .popup-window button { width: 100%; padding: 10px; border: none; border-radius: 5px; background: red; color: #ffffff; cursor: pointer; font-family: inherit; font-size: 16px; font-weight: bold; text-transform: uppercase; margin-top: 15px; border-radius: 20px; } .close-popup { position: absolute; right: 10px; top: 5px; width: 27px; height: 27px; background-color: #fff; cursor: pointer; } .close-popup:before { content: ""; background: #333; width: 20px; height: 1px; position: absolute; top: 13px; left: 4px; transform: rotate(-45deg); } .close-popup:after { content: ""; background: #333; width: 20px; height: 1px; position: absolute; top: 13px; left: 4px; transform: rotate(45deg); } @media screen and (max-width: 576px) { .feedback2 { top: 35%; } .popup-window { top: 35%; } } </style> <div class="feedback2"> <img src="img/i-phone.png" alt="" /> </div> <div class="popup-window"> <div class="close-popup"></div> <form action="index.php"  method="POST" > <label for="name2">PÉLDÁUL: KÁLMÁN DÁNIEL</label> <input id="name2" type="text" name="name" placeholder="Ime" required /> <label for="phone2">PÉLDÁUL: +36 1111 11111</label> <input id="phone2" type="tel" name="phone" placeholder="Telefonszám" required /> <button type="submit">MEGRENDELÉS</button> <input type="hidden" name="sub1" value="{subid}">
+</form> </div> <script> $(document).ready(function () { $(".feedback2").click(function () { $(".popup-window").show(); }); $(".close-popup").click(function () { $(".popup-window").hide(); }); }); </script>
+
+    <script> (function (m, e, t, r, i, k, a) { m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); }; m[i].l = 1 * new Date(); (k = e.createElement(t)), (a = e.getElementsByTagName(t)[0]), (k.async = 1), (k.src = r), a.parentNode.insertBefore(k, a); })( window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym" ); ym(98823544, "init", { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true, }); </script> <style> input[type="tel"] { outline: none; } a { cursor: pointer !important; } button { cursor: pointer !important; } button:disabled { cursor: not-allowed !important; } </style> <script> const code = "36"; const inputs = document.querySelectorAll('input[type="tel"]'); inputs.forEach((input) => { input.value = "+" + code; }); const lengthMain = 5; const lengthTotal = code.length + lengthMain; const forms = document.querySelectorAll("form"); forms.forEach((form) => { const submitBtn = form.querySelector('button[type="submit"]'); const inputPhone = form.querySelector('input[type="tel"]'); if (submitBtn) { submitBtn.disabled = true; if (inputPhone) { inputPhone.addEventListener("input", (e) => { const plus = e.target.value.includes("+"); const clearStr = (e.target.value[0] === "+" ? "+" : "") + e.target.value.replace(/[+]/g, ""); if (plus) { inputPhone.setAttribute("minlength", lengthTotal + 1); } else { inputPhone.setAttribute("minlength", lengthTotal); } inputPhone.value = clearStr; if (/(\+36|36)([0-9]{5})/.test(clearStr)) { submitBtn.disabled = false; inputPhone.style.border = "2px solid green"; } else { submitBtn.disabled = true; inputPhone.style.border = "2px solid red"; } }); } } }); </script> <style> html,body { scroll-behavior: smooth !important; } </style>
+
+  <script type="text/javascript" src="https://cdn.ldrock.com/validator.js"></script>
+<script type="text/javascript">
+    LeadrockValidator.init({
+        geo: {
+            iso_code: 'HU'
+        }
+    });
+</script>
+</body>
+</html>
